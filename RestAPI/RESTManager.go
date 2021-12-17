@@ -15,7 +15,7 @@ import (
 
 var Sensors map[string]Sensor
 var LOG_DIR  = "logs/logs.txt"
-
+var AI_IS_ACTIVE = true
 
 func RunRestApi() {
 	logFile, err := os.OpenFile(LOG_DIR, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
@@ -39,13 +39,16 @@ func RunRestApi() {
 			Sensors[name] = newSensorData
 
 			//log in to file
-			myLogJson, _ := json.Marshal(Sensors)
+			myLogJson, _ := json.Marshal(newSensorData)
 			fmt.Println("--- " , string(myLogJson) )
 			log.Println(string(myLogJson))
 
-			fmt.Println(Sensors)
 			msg := fmt.Sprintf("%s %d %d %d" , name , x , y ,z)
-			AIConnection.AddSensorData(newSensorData.Name,newSensorData.X,newSensorData.Y,newSensorData.Z)
+
+			if AI_IS_ACTIVE {
+				AIConnection.AddSensorData(newSensorData.Name,newSensorData.X,newSensorData.Y,newSensorData.Z)
+			}
+
 			//UDPServer.BroadCastToAll(msg)
 			UDPServer.Publish(msg)
 			fmt.Fprintf(w,"tamom shode , tasir gozar bood :)")
