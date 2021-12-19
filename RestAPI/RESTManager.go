@@ -14,12 +14,12 @@ import (
 )
 
 var Sensors map[string]Sensor
-var LOG_DIR  = "logs/logs.txt"
+var LOG_DIR = "logs/logs.txt"
 var AI_IS_ACTIVE = true
 
 func RunRestApi() {
 	logFile, err := os.OpenFile(LOG_DIR, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	log.SetOutput(logFile)
@@ -29,29 +29,29 @@ func RunRestApi() {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 
-	http.HandleFunc("/Sensor", func(w http.ResponseWriter, r *http.Request){
+	http.HandleFunc("/Sensor", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
-			inputBytes , _ :=  ioutil.ReadAll(r.Body)
+			inputBytes, _ := ioutil.ReadAll(r.Body)
 			w.WriteHeader(200)
 			fmt.Println(inputBytes)
-			name , x ,y,z :=StringParser.StringParser(string(inputBytes))
-			newSensorData := Sensor{name,x,y,z}
+			name, x, y, z := StringParser.StringParser(string(inputBytes))
+			newSensorData := Sensor{name, x, y, z}
 			Sensors[name] = newSensorData
 
 			//log in to file
 			myLogJson, _ := json.Marshal(newSensorData)
-			fmt.Println("--- " , string(myLogJson) )
+			fmt.Println("--- ", string(myLogJson))
 			log.Println(string(myLogJson))
 
-			msg := fmt.Sprintf("%s %d %d %d" , name , x , y ,z)
+			msg := fmt.Sprintf("%s %d %d %d", name, x, y, z)
 
 			if AI_IS_ACTIVE {
-				AIConnection.AddSensorData(newSensorData.Name,newSensorData.X,newSensorData.Y,newSensorData.Z)
+				AIConnection.AddSensorData(newSensorData.Name, newSensorData.X, newSensorData.Y, newSensorData.Z)
 			}
 
 			//UDPServer.BroadCastToAll(msg)
 			UDPServer.Publish(msg)
-			fmt.Fprintf(w,"tamom shode , tasir gozar bood :)")
+			fmt.Fprintf(w, "tamom shode , tasir gozar bood :)")
 
 		}
 		//if r.Method == "POST" {
@@ -77,17 +77,16 @@ func RunRestApi() {
 		//}
 	})
 
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	log.Fatal(http.ListenAndServe(":7070", nil))
 
 }
 
 type Sensor struct {
 	Name string `json:"name"`
-	X int `json:"x"`
-	Y int `json:"y"`
-	Z int `json:"z"`
+	X    int    `json:"x"`
+	Y    int    `json:"y"`
+	Z    int    `json:"z"`
 }
-
 
 //func test()  {
 //	empJson := `{
