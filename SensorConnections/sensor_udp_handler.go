@@ -15,6 +15,7 @@ var LOG_DIR = "logs/logs.txt"
 var AI_IS_ACTIVE = true
 
 func SensorReceiver() {
+	Sensors = make(map[string]Sensor)
 	// listen to incoming udp packets
 	pc, err := net.ListenPacket("udp", ":1053")
 	if err != nil {
@@ -35,13 +36,17 @@ func SensorReceiver() {
 
 func serve(pc net.PacketConn, addr net.Addr, buf []byte) {
 	msg := string(buf)
-	fmt.Println(msg, " **** ", len(msg))
+	println(msg)
 	handle(buf)
 	pc.WriteTo(buf, addr)
 }
 
 func handle(inputBytes []byte) {
 	name, x, y, z := StringParser.StringParser(string(inputBytes))
+	println("***", name, "****")
+	if name == " " || name == "" {
+		return
+	}
 	newSensorData := Sensor{name, x, y, z}
 	Sensors[name] = newSensorData
 
