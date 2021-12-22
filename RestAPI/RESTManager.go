@@ -13,6 +13,9 @@ import (
 	"os"
 )
 
+// this class is obsolete
+// lets use SensorConnection
+
 var Sensors map[string]Sensor
 var LOG_DIR = "logs/logs.txt"
 var AI_IS_ACTIVE = true
@@ -29,7 +32,7 @@ func RunRestApi() {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 
-	http.HandleFunc("/Sensor", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/sensor", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
 			inputBytes, _ := ioutil.ReadAll(r.Body)
 			w.WriteHeader(200)

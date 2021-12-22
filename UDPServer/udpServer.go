@@ -1,12 +1,7 @@
 package UDPServer
 
-import (
-	"net"
-	"sync"
-)
-
-var addrs []*net.UDPConn
-var addrLock sync.RWMutex
+//var addrs []*net.UDPConn
+//var addrLock sync.RWMutex
 
 //func RunUdpSrever()  {
 //	//Basic variables

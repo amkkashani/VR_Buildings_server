@@ -13,7 +13,7 @@ var clientMubtex sync.RWMutex
 func Server3() {
 
 	// listen to incoming udp packets
-	pc, err := net.ListenPacket("udp", ":1053")
+	pc, err := net.ListenPacket("udp", ":1054")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,16 +42,13 @@ func publisher() {
 }
 
 func serve(pc net.PacketConn, addr net.Addr, buf []byte) {
-	// 0 - 1: ID
-	// 2: QR(1): Opcode(4)
 	msg := string(buf)
 	fmt.Println(msg, " **** ", len(msg))
 	if msg == "connect" {
-
 		if !checkIsRepeated(pc, addr) {
 			addToClients(creatClient(addr, pc))
 			pc.WriteTo([]byte("accept"), addr)
-		}else{
+		} else {
 			pc.WriteTo([]byte("refreshed"), addr)
 		}
 
@@ -62,7 +59,7 @@ func serve(pc net.PacketConn, addr net.Addr, buf []byte) {
 
 func checkIsRepeated(pc net.PacketConn, addr net.Addr) bool {
 	for i := 0; i < len(clients); i++ {
-		if  clients[i].pc == pc &&  clients[i].addr.String() == addr.String() {
+		if clients[i].pc == pc && clients[i].addr.String() == addr.String() {
 			return true
 			fmt.Println("repeat")
 		}
