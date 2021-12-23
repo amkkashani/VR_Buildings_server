@@ -13,7 +13,7 @@ var clientMubtex sync.RWMutex
 func Server3() {
 
 	// listen to incoming udp packets
-	pc, err := net.ListenPacket("udp", ":1054")
+	pc, err := net.ListenPacket("udp", ":1053")
 	if err != nil {
 		log.Fatal(err)
 	}

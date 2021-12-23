@@ -10,7 +10,7 @@ func main() {
 	// open 1053 for udp receiver :)
 	// open 1054 for udp unity app  :)
 	go SensorConnections.SensorReceiver()
-	go UDPServer.Server3()
+	go UDPServer.Server3() // unity server
 	//go RestAPI.RunRestApi() //old api
 
 	//never exit :)

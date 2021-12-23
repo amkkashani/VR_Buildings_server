@@ -17,7 +17,7 @@ var AI_IS_ACTIVE = true
 func SensorReceiver() {
 	Sensors = make(map[string]Sensor)
 	// listen to incoming udp packets
-	pc, err := net.ListenPacket("udp", ":1053")
+	pc, err := net.ListenPacket("udp", ":15493")
 	if err != nil {
 		log.Fatal(err)
 	}
