@@ -1,34 +1,34 @@
 package StringParser
 
-
 import (
-"fmt"
-"regexp"
-"strconv"
-"strings"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
-func StringParser(input string) (string , int , int , int) {
-	lines := strings.Split(input,"\n")
+func StringParser(input string) (string, int, int, int) {
+	lines := strings.Split(input, "\n")
 
-	for i := 0; i < len(lines) ; i++ {
+	for i := 0; i < len(lines); i++ {
 		line := lines[i]
-		if strings.Contains(line , "location data") {
+		if strings.Contains(line, "location data") && strings.Contains(line, "position") {
 			//its my log data
 			regexName := regexp.MustCompile(`¦\w*`)
-			name := string( regexName.Find([]byte(line)))
+			name := string(regexName.Find([]byte(line)))
 			regexVector := regexp.MustCompile(`=-?\d*`)
-			vectorPos := (regexVector.FindAll([]byte(line),3))
+			vectorPos := (regexVector.FindAll([]byte(line), 3))
 			fmt.Println("***")
-			fmt.Println(name[1:] , string(vectorPos[0][1:])  , string(vectorPos[1][1:])  , string(vectorPos[2][1:]) )
+			print(line)
+			fmt.Println(name[1:], string(vectorPos[0][1:]), string(vectorPos[1][1:]), string(vectorPos[2][1:]))
 			x, _ := strconv.Atoi(string(vectorPos[0][1:]))
 			y, _ := strconv.Atoi(string(vectorPos[1][1:]))
 			z, _ := strconv.Atoi(string(vectorPos[2][1:]))
-			return name[2:] , x,y,z
+			return name[2:], x, y, z
 		}
 
 	}
-	return "" , 0 ,0 ,0
+	return "", 0, 0, 0
 }
 
 //log example

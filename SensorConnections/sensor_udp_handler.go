@@ -12,7 +12,7 @@ import (
 
 var Sensors map[string]Sensor
 var LOG_DIR = "logs/logs.txt"
-var AI_IS_ACTIVE = true
+var AI_IS_ACTIVE = false
 
 func SensorReceiver() {
 	Sensors = make(map[string]Sensor)
