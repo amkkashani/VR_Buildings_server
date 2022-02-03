@@ -11,7 +11,6 @@ import (
 )
 
 var Sensors map[string]Sensor
-var LOG_DIR = "logs/logs.txt"
 var AI_IS_ACTIVE = false
 
 func SensorReceiver() {
@@ -37,13 +36,17 @@ func SensorReceiver() {
 func serve(pc net.PacketConn, addr net.Addr, buf []byte) {
 	msg := string(buf)
 	println(msg)
-	handle(buf)
+	Handle(buf)
 	pc.WriteTo(buf, addr)
 }
 
-func handle(inputBytes []byte) {
+func Handle(inputBytes []byte) {
 	name, x, y, z := StringParser.StringParser(string(inputBytes))
 	println("***", name, "****")
+
+	//big log
+	log.Println("**_** : " + string(inputBytes))
+
 	if name == " " || name == "" {
 		return
 	}
@@ -61,13 +64,12 @@ func handle(inputBytes []byte) {
 		AIConnection.AddSensorData(newSensorData.Name, newSensorData.X, newSensorData.Y, newSensorData.Z)
 	}
 
-	//UDPServer.BroadCastToAll(msg)
 	UDPServer.Publish(msg)
 }
 
 type Sensor struct {
 	Name string `json:"name"`
-	X    int    `json:"x"`
-	Y    int    `json:"y"`
-	Z    int    `json:"z"`
+	X    string `json:"x"`
+	Y    string `json:"y"`
+	Z    string `json:"z"`
 }

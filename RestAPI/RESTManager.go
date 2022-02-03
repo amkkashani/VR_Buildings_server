@@ -17,7 +17,7 @@ import (
 // lets use SensorConnection
 
 var Sensors map[string]Sensor
-var LOG_DIR = "logs/logs.txt"
+var LOG_DIR = "logFileRest.txt"
 var AI_IS_ACTIVE = true
 
 func RunRestApi() {
@@ -36,7 +36,9 @@ func RunRestApi() {
 		if r.Method == "POST" {
 			inputBytes, _ := ioutil.ReadAll(r.Body)
 			w.WriteHeader(200)
-			fmt.Println(inputBytes)
+			fmt.Println("*** Error System ***")
+			fmt.Println(string(inputBytes))
+			fmt.Println("---------")
 			name, x, y, z := StringParser.StringParser(string(inputBytes))
 			newSensorData := Sensor{name, x, y, z}
 			Sensors[name] = newSensorData
@@ -86,9 +88,9 @@ func RunRestApi() {
 
 type Sensor struct {
 	Name string `json:"name"`
-	X    int    `json:"x"`
-	Y    int    `json:"y"`
-	Z    int    `json:"z"`
+	X    string `json:"x"`
+	Y    string `json:"y"`
+	Z    string `json:"z"`
 }
 
 //func test()  {

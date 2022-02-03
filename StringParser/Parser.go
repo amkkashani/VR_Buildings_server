@@ -3,11 +3,11 @@ package StringParser
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
-func StringParser(input string) (string, int, int, int) {
+func StringParser(input string) (string, string, string, string) { // name x y z
+	// GNNG N E H
 	lines := strings.Split(input, "\n")
 
 	for i := 0; i < len(lines); i++ {
@@ -21,14 +21,27 @@ func StringParser(input string) (string, int, int, int) {
 			fmt.Println("***")
 			print(line)
 			fmt.Println(name[1:], string(vectorPos[0][1:]), string(vectorPos[1][1:]), string(vectorPos[2][1:]))
-			x, _ := strconv.Atoi(string(vectorPos[0][1:]))
-			y, _ := strconv.Atoi(string(vectorPos[1][1:]))
-			z, _ := strconv.Atoi(string(vectorPos[2][1:]))
+			x := string(vectorPos[0][1:])
+			y := string(vectorPos[1][1:])
+			z := string(vectorPos[2][1:])
 			return name[2:], x, y, z
+		} else if strings.Contains(line, "$GNGGA") {
+			n, e, a := "", "", ""
+			strArr := strings.Split(line, ",")
+			for i, str := range strArr {
+				if str == "N" || str == "S" {
+					n = strArr[i-1]
+				} else if str == "E" || str == "W" {
+					e = strArr[i-1]
+				} else if str == "M" && a == "" { // hight
+					a = strArr[i-1]
+				}
+			}
+			return "$GNGGA", n, e, a
 		}
 
 	}
-	return "", 0, 0, 0
+	return "", "", "", ""
 }
 
 //log example
