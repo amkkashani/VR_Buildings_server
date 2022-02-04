@@ -58,7 +58,8 @@ func Handle(inputBytes []byte) {
 	fmt.Println("--- ", string(myLogJson))
 	log.Println(string(myLogJson))
 
-	msg := fmt.Sprintf("%s %d %d %d", name, x, y, z)
+	msg := fmt.Sprintf("%s %s %s %s", name, x, y, z)
+	fmt.Println(msg)
 
 	if AI_IS_ACTIVE {
 		AIConnection.AddSensorData(newSensorData.Name, newSensorData.X, newSensorData.Y, newSensorData.Z)
