@@ -2,15 +2,20 @@ package TcpGpsServer
 
 import (
 	"bufio"
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"locationServer/SensorConnections"
+	"locationServer/StringParser"
+	"locationServer/UDPServer"
+	"log"
 	"net"
 	"os"
 	"strings"
 )
 
 const (
-	CONN_HOST = "127.0.0.1"
+	CONN_HOST = ""
 	CONN_PORT = "3333"
 	CONN_TYPE = "tcp"
 )
@@ -72,6 +77,37 @@ func handleRequest2(conn net.Conn) {
 
 		SensorConnections.Handle([]byte(netData))
 		fmt.Print("-> ", string(netData))
-		conn.Write([]byte(string(netData) + "Message received."))
+
+		hexString := "24244C473500010101697320746F6B656E000000000000000000000000000000000000000000000000000000000000000000000000000000000000237E0D0A"
+		decodedByteArray, err := hex.DecodeString(hexString)
+		if err != nil {
+			fmt.Println("Unable to convert hex to byte. ", err)
+		}
+		conn.Write(decodedByteArray)
 	}
+
+}
+
+func Handle(inputBytes []byte) {
+	name, x, y, z := StringParser.StringParser(string(inputBytes))
+	println("***", name, "****")
+
+	//big log
+	log.Println("**_** : " + string(inputBytes))
+
+	if name == " " || name == "" {
+		return
+	}
+	newSensorData := SensorConnections.Sensor{name, x, y, z}
+	SensorConnections.Sensors[name] = newSensorData
+
+	//log in to file
+	myLogJson, _ := json.Marshal(newSensorData)
+	fmt.Println("--- ", string(myLogJson))
+	log.Println(string(myLogJson))
+
+	msg := fmt.Sprintf("%s %s %s %s", name, x, y, z)
+	fmt.Println(msg)
+
+	UDPServer.Publish(msg)
 }

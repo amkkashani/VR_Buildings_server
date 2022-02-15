@@ -9,12 +9,13 @@ import (
 )
 
 const (
-	CONN_HOST = "127.0.0.1"
+	CONN_HOST = "185.110.189.249"
+	//CONN_HOST = "127.0.0.1"
 	CONN_PORT = "3333"
 	CONN_TYPE = "tcp"
 )
 
-func main() {
+func main3() {
 	c, err := net.Dial(CONN_TYPE, CONN_HOST+":"+CONN_PORT)
 	if err != nil {
 		fmt.Println(err)
