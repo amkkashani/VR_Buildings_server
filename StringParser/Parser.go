@@ -33,7 +33,7 @@ func StringParser(input string) (string, string, string, string) { // name x y z
 					n = strArr[i-1]
 				} else if str == "E" || str == "W" {
 					e = strArr[i-1]
-				} else if str == "M" && a == "" { // hight
+				} else if (str == "M" || str == "U") && a == "" { // hight
 					a = strArr[i-1]
 				}
 			}
