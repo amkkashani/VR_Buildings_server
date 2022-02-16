@@ -2,6 +2,7 @@ package TcpGpsServer
 
 import (
 	"bufio"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"locationServer/StringParser"
 	"locationServer/UDPServer"
 	"log"
+	"math"
 	"net"
 	"os"
 	"strings"
@@ -42,21 +44,21 @@ func RunGpsTcpServer() {
 	}
 }
 
-func handleRequest(conn net.Conn) {
-	// Make a buffer to hold incoming data.
-	buf := make([]byte, 1024)
-	// Read the incoming connection into the buffer.
-	_, err := conn.Read(buf)
-	if err != nil {
-		fmt.Println("Error reading:", err.Error())
-	}
-
-	SensorConnections.Handle(buf)
-	// Send a response back to person contacting us.
-	conn.Write([]byte(string(buf) + "Message received."))
-	// Close the connection when you're done with it.
-	conn.Close()
-}
+//func handleRequest(conn net.Conn) {
+//	// Make a buffer to hold incoming data.
+//	buf := make([]byte, 1024)
+//	// Read the incoming connection into the buffer.
+//	_, err := conn.Read(buf)
+//	if err != nil {
+//		fmt.Println("Error reading:", err.Error())
+//	}
+//
+//	SensorConnections.Handle(buf)
+//	// Send a response back to person contacting us.
+//	conn.Write([]byte(string(buf) + "Message received."))
+//	// Close the connection when you're done with it.
+//	conn.Close()
+//}
 
 func handleRequest2(conn net.Conn) {
 	for {
@@ -75,11 +77,11 @@ func handleRequest2(conn net.Conn) {
 			return
 		}
 
-		SensorConnections.Handle([]byte(netData))
+		Handle([]byte(netData))
 		fmt.Print("-> ", string(netData))
 
-		hexString := "24244C473500010101697320746F6B656E000000000000000000000000000000000000000000000000000000000000000000000000000000000000237E0D0A"
-		decodedByteArray, err := hex.DecodeString(hexString)
+		responseAuth := "24244C473500010101697320746F6B656E000000000000000000000000000000000000000000000000000000000000000000000000000000000000237E0D0A"
+		decodedByteArray, err := hex.DecodeString(responseAuth)
 		if err != nil {
 			fmt.Println("Unable to convert hex to byte. ", err)
 		}
@@ -89,6 +91,7 @@ func handleRequest2(conn net.Conn) {
 }
 
 func Handle(inputBytes []byte) {
+
 	name, x, y, z := StringParser.StringParser(string(inputBytes))
 	println("***", name, "****")
 
@@ -110,4 +113,46 @@ func Handle(inputBytes []byte) {
 	fmt.Println(msg)
 
 	UDPServer.Publish(msg)
+}
+
+//  return Latitude Longitude Elevation
+//func gpsSensorParser(decodedByteArray []byte , str string ) (string , string ,string) {
+//
+//	if strings.Contains(str , "GP") {
+//		latIndex := 6
+//		lat := float64frombytes(decodedByteArray[latIndex:latIndex+8])
+//
+//		longIndex := 14
+//		long := float64frombytes(decodedByteArray[longIndex:longIndex+8])
+//
+//
+//		heightIndex := 22
+//		height := float32frombytes(decodedByteArray[heightIndex:heightIndex+4])
+//		fmt.Println()
+//
+//		return  lat, string(long) , string(height)
+//
+//	}else{
+//		return "","",""
+//	}
+//}
+
+func convertFloat64ToString(f float64) string {
+	return fmt.Sprintf("%.12f", f)
+}
+
+func convertFloat32ToString(f float32) string {
+	return fmt.Sprintf("%.6f", f)
+}
+
+func float64frombytes(bytes []byte) float64 {
+	bits := binary.LittleEndian.Uint64(bytes)
+	float := math.Float64frombits(bits)
+	return float
+}
+
+func float32frombytes(bytes []byte) float32 {
+	bits := binary.LittleEndian.Uint32(bytes)
+	float := math.Float32frombits(bits)
+	return float
 }
