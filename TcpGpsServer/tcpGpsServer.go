@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"locationServer/SensorConnections"
-	"locationServer/StringParser"
 	"locationServer/UDPServer"
 	"log"
 	"math"
@@ -37,7 +36,6 @@ func RunGpsTcpServer() {
 		conn, err := l.Accept()
 		if err != nil {
 			fmt.Println("Error accepting: ", err.Error())
-			os.Exit(1)
 		}
 		// Handle connections in a new goroutine.
 		go handleRequest2(conn)
@@ -92,11 +90,14 @@ func handleRequest2(conn net.Conn) {
 
 func Handle(inputBytes []byte) {
 
-	name, x, y, z := StringParser.StringParser(string(inputBytes))
+	name := "gpsSensor"
+	x, y, z := gpsSensorParser(inputBytes, string(inputBytes))
 	println("***", name, "****")
 
 	//big log
 	log.Println("**_** : " + string(inputBytes))
+	log.Println(inputBytes)
+	log.Println("input bytes\n---")
 
 	if name == " " || name == "" {
 		return
@@ -115,27 +116,26 @@ func Handle(inputBytes []byte) {
 	UDPServer.Publish(msg)
 }
 
-//  return Latitude Longitude Elevation
-//func gpsSensorParser(decodedByteArray []byte , str string ) (string , string ,string) {
-//
-//	if strings.Contains(str , "GP") {
-//		latIndex := 6
-//		lat := float64frombytes(decodedByteArray[latIndex:latIndex+8])
-//
-//		longIndex := 14
-//		long := float64frombytes(decodedByteArray[longIndex:longIndex+8])
-//
-//
-//		heightIndex := 22
-//		height := float32frombytes(decodedByteArray[heightIndex:heightIndex+4])
-//		fmt.Println()
-//
-//		return  lat, string(long) , string(height)
-//
-//	}else{
-//		return "","",""
-//	}
-//}
+//gpsSensorParser return Latitude Longitude Elevation
+func gpsSensorParser(decodedByteArray []byte, str string) (string, string, string) {
+
+	if strings.Contains(str, "GP") {
+		latIndex := 6
+		lat := float64frombytes(decodedByteArray[latIndex : latIndex+8])
+
+		longIndex := 14
+		long := float64frombytes(decodedByteArray[longIndex : longIndex+8])
+
+		heightIndex := 22
+		height := float32frombytes(decodedByteArray[heightIndex : heightIndex+4])
+		fmt.Println()
+
+		return convertFloat64ToString(lat), convertFloat64ToString(long), convertFloat32ToString(height)
+
+	} else {
+		return "", "", ""
+	}
+}
 
 func convertFloat64ToString(f float64) string {
 	return fmt.Sprintf("%.12f", f)
