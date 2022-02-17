@@ -36,6 +36,8 @@ func RunGpsTcpServer() {
 		conn, err := l.Accept()
 		if err != nil {
 			fmt.Println("Error accepting: ", err.Error())
+			log.Println("Error Accepting +-*=")
+			continue
 		}
 		// Handle connections in a new goroutine.
 		go handleRequest2(conn)
@@ -63,15 +65,6 @@ func handleRequest2(conn net.Conn) {
 		netData, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
 			fmt.Println(err)
-			return
-		}
-		if strings.TrimSpace(string(netData)) == "STOP" {
-			fmt.Println("Exiting TCP server!")
-			return
-		}
-
-		if strings.TrimSpace(string(netData)) == "STOP" {
-			fmt.Println("Exiting TCP server!")
 			return
 		}
 
@@ -120,6 +113,10 @@ func Handle(inputBytes []byte) {
 func gpsSensorParser(decodedByteArray []byte, str string) (string, string, string) {
 
 	if strings.Contains(str, "GP") {
+		if len(decodedByteArray) < 26 {
+			// we cant resolve this msg
+			return "", "", ""
+		}
 		latIndex := 6
 		lat := float64frombytes(decodedByteArray[latIndex : latIndex+8])
 
