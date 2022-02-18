@@ -92,7 +92,7 @@ func Handle(inputBytes []byte) {
 	log.Println(inputBytes)
 	log.Println("input bytes\n---")
 
-	if name == " " || name == "" {
+	if x == " " || x == "" {
 		return
 	}
 	newSensorData := SensorConnections.Sensor{name, x, y, z}
