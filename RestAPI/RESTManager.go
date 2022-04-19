@@ -21,7 +21,8 @@ var LOG_DIR = "logFileRest.txt"
 var AI_IS_ACTIVE = true
 
 func RunRestApi() {
-	logFile, err := os.OpenFile(LOG_DIR, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	//logFile, err := os.OpenFile(LOG_DIR, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	logFile, err := os.Create(LOG_DIR)
 	if err != nil {
 		panic(err)
 	}

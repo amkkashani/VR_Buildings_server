@@ -15,7 +15,7 @@ func main() {
 	go SensorConnections.SensorReceiver()
 	go TcpGpsServer.RunGpsTcpServer() // on port 3333
 	go RestAPI.RunRestApi()           //old api
-	go UDPServer.Server3()            // unity server
+	go UDPServer.Server3()            // unity server 1053
 
 	//never exit :)
 	var m sync.WaitGroup
