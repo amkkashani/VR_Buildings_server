@@ -1,0 +1,9 @@
+version: "3"
+services:
+  gps:
+    image: gps_server:1
+    ports:
+      - "3333:3333/tcp"
+      - "1053:1053/udp"
+      - "1054:1054/udp"
+      - "15493:15493/udp"
