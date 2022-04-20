@@ -2,6 +2,9 @@ version: "3"
 services:
   gps:
     image: gps_server:1
+    build: .
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     ports:
       - "3333:3333/tcp"
       - "1053:1053/udp"
