@@ -84,7 +84,7 @@ func handleRequest2(conn net.Conn) {
 func Handle(inputBytes []byte) {
 
 	name := "gpsSensor"
-	x, y, z := gpsSensorParser(inputBytes, string(inputBytes))
+	x, y, z, qos := gpsSensorParser(inputBytes, string(inputBytes))
 	println("***", name, "****")
 
 	//big log
@@ -95,7 +95,7 @@ func Handle(inputBytes []byte) {
 	if x == " " || x == "" {
 		return
 	}
-	newSensorData := SensorConnections.Sensor{name, x, y, z}
+	newSensorData := SensorConnections.Sensor{name, x, y, z, qos}
 	SensorConnections.Sensors[name] = newSensorData
 
 	//log in to file
@@ -110,12 +110,12 @@ func Handle(inputBytes []byte) {
 }
 
 //gpsSensorParser return Latitude Longitude Elevation
-func gpsSensorParser(decodedByteArray []byte, str string) (string, string, string) {
+func gpsSensorParser(decodedByteArray []byte, str string) (string, string, string, byte) {
 
 	if strings.Contains(str, "GP") {
 		if len(decodedByteArray) < 26 {
 			// we cant resolve this msg
-			return "", "", ""
+			return "", "", "", 0
 		}
 		latIndex := 6
 		lat := float64frombytes(decodedByteArray[latIndex : latIndex+8])
@@ -127,10 +127,12 @@ func gpsSensorParser(decodedByteArray []byte, str string) (string, string, strin
 		height := float32frombytes(decodedByteArray[heightIndex : heightIndex+4])
 		fmt.Println()
 
-		return convertFloat64ToString(lat), convertFloat64ToString(long), convertFloat32ToString(height)
+		var qualiyOfService = decodedByteArray[26]
+
+		return convertFloat64ToString(lat), convertFloat64ToString(long), convertFloat32ToString(height), qualiyOfService
 
 	} else {
-		return "", "", ""
+		return "", "", "", 0
 	}
 }
 

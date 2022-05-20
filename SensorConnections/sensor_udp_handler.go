@@ -50,7 +50,7 @@ func Handle(inputBytes []byte) {
 	if name == " " || name == "" {
 		return
 	}
-	newSensorData := Sensor{name, x, y, z}
+	newSensorData := Sensor{name, x, y, z, 1}
 	Sensors[name] = newSensorData
 
 	//log in to file
@@ -73,4 +73,5 @@ type Sensor struct {
 	X    string `json:"x"`
 	Y    string `json:"y"`
 	Z    string `json:"z"`
+	Qos  byte   `json:"qos"`
 }

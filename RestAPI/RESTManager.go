@@ -18,7 +18,7 @@ import (
 
 var Sensors map[string]Sensor
 var LOG_DIR = "logFileRest.txt"
-var AI_IS_ACTIVE = true
+var AI_IS_ACTIVE = false
 
 func RunRestApi() {
 	//logFile, err := os.OpenFile(LOG_DIR, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
