@@ -103,7 +103,7 @@ func Handle(inputBytes []byte) {
 	fmt.Println("--- ", string(myLogJson))
 	log.Println(string(myLogJson))
 
-	msg := fmt.Sprintf("%s %s %s %s", name, x, y, z)
+	msg := fmt.Sprintf("%s %s %s %s %v", name, x, y, z, qos)
 	fmt.Println(msg)
 
 	UDPServer.Publish(msg)
